@@ -1,5 +1,46 @@
 <html>
+<head>
+    <title>Music</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
 <body>
-<h1>שלום עולם</h1>
+<main class="main">
+    <h1>SONGS LIST</h1>
+    <ol>
+        {% for song in songs %}
+            <li>
+                {{ song.name }} - {{ song.artist }} - {{ song.album }}
+            </li>
+        {% endfor %}
+    </ol>
+</main>
+<footer>
+    <p>
+        Read about templates:
+        <a href="https://docs.djangoproject.com/en/4.0/topics/templates/">Django templates documentation</a>
+    </p>
+</footer>
 </body>
 </html>
+
+<style>
+    body {
+        background-color: #7D6B7D;
+    }
+
+    footer, main {
+        background-color: #FF8C64;
+        font-size: 1.5rem;
+        margin: 5em auto;
+        padding: 2em;
+        width: 70%;
+        max-width: 1000px;
+        border-radius: 1em;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    footer {
+        background-color: #FFF587;
+    }
+
+</style>
