@@ -6,4 +6,7 @@ class Song(models.Model):
     artist = models.CharField(max_length=200)
     album = models.CharField(max_length=200)
     release_year = models.DateField(null=True)
-    youtube_link = models.URLField(null=True)
+    youtube_link = models.URLField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.name}'
