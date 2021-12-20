@@ -9,7 +9,8 @@
     <ol>
         {% for song in songs %}
             <li>
-                {{ song.name }} - {{ song.artist }} - {{ song.album }}
+                {{ song.name }} - {{ song.artist }} - {{ song.album }}.  Year: {{ song.release_year | date:"Y" }}
+            Link: <a href="{{ song.youtube_link }}">קישור</a>
             </li>
         {% endfor %}
     </ol>
