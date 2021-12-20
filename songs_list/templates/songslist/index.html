@@ -14,6 +14,15 @@
             </li>
         {% endfor %}
     </ol>
+    <hr/>
+    <h1>ARTIST LIST</h1>
+<ol>
+    {% for artist in artists %}
+        <li>
+            {{ artist.first_name }} {{ artist.last_name }}
+        </li>
+        {% endfor %}
+</ol>
 </main>
 <footer>
     <p>
