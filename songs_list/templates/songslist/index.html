@@ -6,23 +6,26 @@
 <body>
 <main class="main">
     <h1>SONGS LIST</h1>
-    <ol>
+    <table>
+        <thead>
+        <th>song</th>
+        <th>artist</th>
+        <th>album</th>
+        <th>year</th>
+        <th>youtube link</th>
+        </thead>
+        <tbody>
         {% for song in songs %}
-            <li>
-                {{ song.name }} - {{ song.artist }} - {{ song.album }}.  Year: {{ song.release_year | date:"Y" }}
-            Link: <a href="{{ song.youtube_link }}">קישור</a>
-            </li>
+            <tr>
+                <td>{{ song.name }}</td>
+                <td>{{ song.song_artist }}</td>
+                <td>{{ song.album }}</td>
+                <td>{{ song.release_year | date:"Y" }}</td>
+                <td><a href="{{ song.youtube_link }}">קישור</a></td>
+            </tr>
         {% endfor %}
-    </ol>
-    <hr/>
-    <h1>ARTIST LIST</h1>
-<ol>
-    {% for artist in artists %}
-        <li>
-            {{ artist.first_name }} {{ artist.last_name }}
-        </li>
-        {% endfor %}
-</ol>
+        </tbody>
+    </table>
 </main>
 <footer>
     <p>
@@ -50,6 +53,27 @@
 
     footer {
         background-color: #FFF587;
+    }
+
+    table {
+        background-color: #ffc2bd;
+        border: solid 1px black;
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    table thead th {
+        background-color: #FFF587;
+        border: solid 1px black;
+        padding: 10px;
+        text-align: left;
+        text-transform: uppercase;
+    }
+
+    table tbody td {
+        border: solid 1px black;
+        padding: 10px;
     }
 
 </style>

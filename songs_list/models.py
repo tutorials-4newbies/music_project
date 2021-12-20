@@ -11,7 +11,7 @@ class Artist(models.Model):
 
 class Song(models.Model):
     name = models.CharField(max_length=200)
-    artist = models.CharField(max_length=200)
+    song_artist = models.ForeignKey(Artist, null=True, on_delete=models.SET_NULL)
     album = models.CharField(max_length=200)
     release_year = models.DateField(null=True)
     youtube_link = models.URLField(null=True, blank=True)
