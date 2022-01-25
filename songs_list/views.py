@@ -39,7 +39,7 @@ def songs_view(request):
             song.name = name
 
         album = data.get("album")
-        if not name:
+        if not album:
             return JsonResponse({'error': 'Missing parameter: album'}, status=HTTPStatus.BAD_REQUEST)
         else:
             song.album = album
@@ -65,28 +65,43 @@ def songs_view(request):
 
 @csrf_exempt
 def single_song_view(request, song_id):
+    try:
+        song = get_object_or_404(Song, id=song_id)
+    except response.Http404:
+        return JsonResponse({'error': 'The resource was not found'}, status=HTTPStatus.NOT_FOUND)
+
     if request.method == "GET":
-        try:
-            song = get_object_or_404(Song, id=song_id)
-            content = song_obj_to_dict(song)
-            return JsonResponse({"song": content})
-        except response.Http404:
-            return JsonResponse({'error': 'The resource was not found'}, status=HTTPStatus.NOT_FOUND)
+        content = song_obj_to_dict(song)
+        return JsonResponse({"song": content})
 
     if request.method == "DELETE":
-        # TODO 1
-        # DELETE an object
-        # https://docs.djangoproject.com/en/4.0/topics/db/queries/#retrieving-objects
-        # https://docs.djangoproject.com/en/4.0/topics/db/queries/#deleting-objects
-        pass
+        song.delete()
+        return JsonResponse({'Success': 'The song was deleted'}, status=HTTPStatus.OK)
 
     if request.method == "PATCH":
-        # TODO 2
-        # UPDATE parts of the object
-        # https://docs.djangoproject.com/en/4.0/topics/db/queries/#retrieving-objects
-        # https://docs.djangoproject.com/en/4.0/topics/db/queries/#saving-changes-to-objects
-
-        # You should send raw data as json from POSTMAN
-        # Example: {"name": "My song", "release_year": 2020}
-        # And then you can access the data like this line:
         data = json.loads(request.body.decode('utf-8'))
+        name = data.get("name")
+        if name:
+            song.name = name
+
+        album = data.get("album")
+        if album:
+            song.album = album
+
+        release_year = data.get("release_year")
+        if release_year:
+            try:
+                song.release_year = datetime.strptime(str(release_year), "%Y")
+            except ValueError:
+                return JsonResponse(
+                    {'error': 'Bad format: release_year. needs to be a year, example "2002"'},
+                    status=HTTPStatus.BAD_REQUEST
+                )
+
+        youtube_link = data.get("youtube_link")
+        if youtube_link:
+            song.youtube_link = youtube_link
+
+        song.save()
+        content = song_obj_to_dict(song)
+        return JsonResponse({"song": content}, status=HTTPStatus.OK)
