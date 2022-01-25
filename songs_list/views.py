@@ -2,6 +2,7 @@ from http import HTTPStatus
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse, response
 from django.views.decorators.csrf import csrf_exempt
+from datetime import datetime
 
 from songs_list.models import Song, Artist
 from songs_list.serializers import song_obj_to_dict
@@ -29,8 +30,27 @@ def songs_view(request):
     if request.method == "POST":
         data = request.POST
         song = Song()
-        song.name = data["name"]
-        song.album = data["album"]
+
+        name = data.get("name")
+        if not name:
+            return JsonResponse({'error': 'Missing parameter: name'}, status=HTTPStatus.BAD_REQUEST)
+        else:
+            song.name = name
+
+        album = data.get("album")
+        if not name:
+            return JsonResponse({'error': 'Missing parameter: album'}, status=HTTPStatus.BAD_REQUEST)
+        else:
+            song.album = album
+
+        release_year = data.get("release_year")
+        if release_year:
+            song.release_year = datetime.strptime(release_year, "%Y")
+
+        youtube_link = data.get("youtube_link")
+        if youtube_link:
+            song.youtube_link = youtube_link
+
         song.save()
         content = song_obj_to_dict(song)
         return JsonResponse({"song": content}, status=HTTPStatus.CREATED)
@@ -42,9 +62,7 @@ def get_song(request, song_id):
         content = song_obj_to_dict(song)
         return JsonResponse({"song": content})
     except response.Http404:
-        return JsonResponse({
-            'error': 'The resource was not found'
-        }, status=HTTPStatus.NOT_FOUND)
+        return JsonResponse({'error': 'The resource was not found'}, status=HTTPStatus.NOT_FOUND)
 
 
 def create_song(request):
