@@ -4,6 +4,7 @@ from django.http import JsonResponse, response
 from django.views.decorators.csrf import csrf_exempt
 
 from songs_list.models import Song, Artist
+from songs_list.serializers import song_obj_to_dict
 
 
 def index(request):
@@ -22,17 +23,7 @@ def songs_view(request):
         songs = Song.objects.all()
         content = []
         for song in songs:
-            if song.release_year is not None:
-                year = song.release_year.strftime("%Y")
-            else:
-                year = None
-            content.append({
-                "id": song.id,
-                "name": song.name,
-                "album": song.album,
-                "release_year": year,
-                "youtube_link": song.youtube_link
-            })
+            content.append(song_obj_to_dict(song))
         return JsonResponse({"songs": content})
 
     if request.method == "POST":
@@ -41,28 +32,14 @@ def songs_view(request):
         song.name = data["name"]
         song.album = data["album"]
         song.save()
-        content = {
-            "id": song.id,
-            "name": song.name,
-            "album": song.album
-        }
+        content = song_obj_to_dict(song)
         return JsonResponse({"song": content}, status=HTTPStatus.CREATED)
 
 
 def get_song(request, song_id):
     try:
         song = get_object_or_404(Song, id=song_id)
-        if song.release_year is not None:
-            year = song.release_year.strftime("%Y")
-        else:
-            year = None
-        content = {
-            "id": song.id,
-            "name": song.name,
-            "album": song.album,
-            "release_year": year,
-            "youtube_link": song.youtube_link
-        }
+        content = song_obj_to_dict(song)
         return JsonResponse({"song": content})
     except response.Http404:
         return JsonResponse({
