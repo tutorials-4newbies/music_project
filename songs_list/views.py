@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse, response
 from django.views.decorators.csrf import csrf_exempt
@@ -35,7 +36,17 @@ def songs_view(request):
         return JsonResponse({"songs": content})
 
     if request.method == "POST":
-        pass
+        data = request.POST
+        song = Song()
+        song.name = data["name"]
+        song.album = data["album"]
+        song.save()
+        content = {
+            "id": song.id,
+            "name": song.name,
+            "album": song.album
+        }
+        return JsonResponse({"song": content}, status=HTTPStatus.CREATED)
 
 
 def get_song(request, song_id):
@@ -56,7 +67,7 @@ def get_song(request, song_id):
     except response.Http404:
         return JsonResponse({
             'error': 'The resource was not found'
-        }, status=404)
+        }, status=HTTPStatus.NOT_FOUND)
 
 
 def create_song(request):
