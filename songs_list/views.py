@@ -6,6 +6,7 @@ from datetime import datetime
 
 from songs_list.models import Song, Artist
 from songs_list.serializers import song_obj_to_dict
+import json
 
 
 def index(request):
@@ -72,16 +73,20 @@ def single_song_view(request, song_id):
         except response.Http404:
             return JsonResponse({'error': 'The resource was not found'}, status=HTTPStatus.NOT_FOUND)
 
-    if request.method == "PUT":
-        # TODO 1
-        # UPDATE parts of the object
-        # https://docs.djangoproject.com/en/4.0/topics/db/queries/#retrieving-objects
-        # https://docs.djangoproject.com/en/4.0/topics/db/queries/#saving-changes-to-objects
-        pass
-
     if request.method == "DELETE":
-        # TODO 2
+        # TODO 1
         # DELETE an object
         # https://docs.djangoproject.com/en/4.0/topics/db/queries/#retrieving-objects
         # https://docs.djangoproject.com/en/4.0/topics/db/queries/#deleting-objects
         pass
+
+    if request.method == "PATCH":
+        # TODO 2
+        # UPDATE parts of the object
+        # https://docs.djangoproject.com/en/4.0/topics/db/queries/#retrieving-objects
+        # https://docs.djangoproject.com/en/4.0/topics/db/queries/#saving-changes-to-objects
+
+        # You should send raw data as json from POSTMAN
+        # Example: {"name": "My song", "release_year": 2020}
+        # And then you can access the data like this line:
+        data = json.loads(request.body.decode('utf-8'))
