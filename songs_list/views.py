@@ -61,6 +61,17 @@ def songs_view(request):
         content = song_obj_to_dict(song)
         return JsonResponse({"song": content}, status=HTTPStatus.CREATED)
 
+
+@csrf_exempt
+def single_song_view(request, song_id):
+    if request.method == "GET":
+        try:
+            song = get_object_or_404(Song, id=song_id)
+            content = song_obj_to_dict(song)
+            return JsonResponse({"song": content})
+        except response.Http404:
+            return JsonResponse({'error': 'The resource was not found'}, status=HTTPStatus.NOT_FOUND)
+
     if request.method == "PUT":
         # TODO 1
         # UPDATE parts of the object
@@ -74,16 +85,3 @@ def songs_view(request):
         # https://docs.djangoproject.com/en/4.0/topics/db/queries/#retrieving-objects
         # https://docs.djangoproject.com/en/4.0/topics/db/queries/#deleting-objects
         pass
-
-
-def get_song(request, song_id):
-    try:
-        song = get_object_or_404(Song, id=song_id)
-        content = song_obj_to_dict(song)
-        return JsonResponse({"song": content})
-    except response.Http404:
-        return JsonResponse({'error': 'The resource was not found'}, status=HTTPStatus.NOT_FOUND)
-
-
-def create_song(request):
-    pass
