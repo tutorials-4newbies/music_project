@@ -61,6 +61,20 @@ def songs_view(request):
         content = song_obj_to_dict(song)
         return JsonResponse({"song": content}, status=HTTPStatus.CREATED)
 
+    if request.method == "PUT":
+        # TODO 1
+        # UPDATE parts of the object
+        # https://docs.djangoproject.com/en/4.0/topics/db/queries/#retrieving-objects
+        # https://docs.djangoproject.com/en/4.0/topics/db/queries/#saving-changes-to-objects
+        pass
+
+    if request.method == "DELETE":
+        # TODO 2
+        # DELETE an object
+        # https://docs.djangoproject.com/en/4.0/topics/db/queries/#retrieving-objects
+        # https://docs.djangoproject.com/en/4.0/topics/db/queries/#deleting-objects
+        pass
+
 
 def get_song(request, song_id):
     try:
