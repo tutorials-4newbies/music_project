@@ -45,7 +45,13 @@ def songs_view(request):
 
         release_year = data.get("release_year")
         if release_year:
-            song.release_year = datetime.strptime(release_year, "%Y")
+            try:
+                song.release_year = datetime.strptime(release_year, "%Y")
+            except ValueError:
+                return JsonResponse(
+                    {'error': 'Bad format: release_year. needs to be a year, example "2002"'},
+                    status=HTTPStatus.BAD_REQUEST
+                )
 
         youtube_link = data.get("youtube_link")
         if youtube_link:
