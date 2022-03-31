@@ -3,6 +3,7 @@
 ```shell
     git clone git@github.com:tutorials-4newbies/music_project.git
     cd music_project
+    git checkout api
 ```
 
 
