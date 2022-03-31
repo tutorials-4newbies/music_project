@@ -12,15 +12,3 @@ def index(request):
         "artists": artists
     }
     return render(request, 'songslist/index.html', context)
-
-
-def get_all_songs(request):
-    songs = Song.objects.all()
-    content = []
-    for song in songs:
-        content.append({
-            "id": song.id,
-            "name": song.name,
-        })
-
-    return JsonResponse({"songs": content})
