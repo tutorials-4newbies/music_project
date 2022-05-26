@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from django.shortcuts import render
 from django.http import JsonResponse
 
@@ -22,7 +24,14 @@ def songs(request):
         item = dict(
             id=song.id,
             name=song.name,
-            album=song.album
+            album=song.album,
+            year=song.release_year.year,
+            youtube_link=song.youtube_link,
+            song_artist=dict(
+                id=song.song_artist.id,
+                first_name=song.song_artist.first_name,
+                last_name=song.song_artist.last_name,
+            )
         )
         serialized_songs.append(item)
 
@@ -36,16 +45,25 @@ def songs(request):
 
 def song(request, id):
     # GET /songs/1/ --> One object
-    song = Song.objects.get(pk=id)
+    try:
+        song = Song.objects.get(pk=id)
+    except Song.DoesNotExist:
+        return JsonResponse({"data": "object not found"}, status=404)
 
     return JsonResponse(dict(
-        song=dict(
+        data=dict(
             id=song.id,
-            name=song.name
+            name=song.name,
+            album=song.album,
+            year=song.release_year.year,
+            youtube_link=song.youtube_link,
+            song_artist=dict(
+                id=song.song_artist.id,
+                first_name=song.song_artist.first_name,
+                last_name=song.song_artist.last_name,
+            )
         )
     ))
-
-
 
 
 
