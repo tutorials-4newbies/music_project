@@ -59,7 +59,8 @@ def songs(request):
         return JsonResponse(response_dict, status=200)
 
     elif method == "POST":
-        client_data = json.loads(request.body)
+        client_data = request.POST
+        # client_data = json.loads(request.body)
 
         if "name" in client_data:
             name = client_data["name"]
@@ -68,7 +69,7 @@ def songs(request):
 
         try:
             parsed_release_year = datetime(
-                year=client_data["release_year"],
+                year=int(client_data["release_year"]),
                 month=1,
                 day=1
             )
