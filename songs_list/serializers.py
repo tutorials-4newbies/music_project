@@ -3,6 +3,10 @@ from datetime import datetime
 from songs_list.models import Song
 
 
+class SongValidationError(Exception):
+    pass
+
+
 class SongSerializer:
 
     @staticmethod
@@ -39,10 +43,27 @@ class SongSerializer:
         except (KeyError, TypeError):
             parsed_release_year = None
 
-        song = Song(
-            name=json_dict["name"],
-            album=json_dict["album"],
-            release_year=parsed_release_year,
-            youtube_link=json_dict["youtube_link"]
-        )
-        return song
+        missing_parameters = []
+
+        if "name" not in json_dict:
+            missing_parameters.append("name")
+
+        if "album" not in json_dict:
+            missing_parameters.append("album")
+
+        if "youtube_link" not in json_dict:
+            missing_parameters.append("youtube_link")
+
+        if "release_year" not in json_dict:
+            missing_parameters.append("release_year")
+
+        if len(missing_parameters) > 0:
+            raise SongValidationError(f"missing parameters {missing_parameters}")
+        else:
+            song = Song(
+                name=json_dict["name"],
+                album=json_dict["album"],
+                release_year=parsed_release_year,
+                youtube_link=json_dict["youtube_link"]
+            )
+            return song

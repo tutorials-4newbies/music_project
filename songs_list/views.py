@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from songs_list.models import Song
-from songs_list.serializers import SongSerializer
+from songs_list.serializers import SongSerializer, SongValidationError
 
 
 def index(request):
@@ -75,3 +75,25 @@ def song(request, id):
         before_delete_id = song.id
         song.delete()
         return JsonResponse({"data": f"Deleted song #{before_delete_id}"}, status=204)
+
+    elif method == "PUT":
+        client_data = json.loads(request.body)
+
+        try:
+            client_request_song = SongSerializer.deserializer(client_data)
+        except SongValidationError as e:
+            response = dict(
+                error_message=f"{e}"
+            )
+            return JsonResponse(response, status=400)
+
+        song.name = client_request_song.name
+        song.album = client_request_song.album
+        song.release_year = client_request_song.release_year
+        song.youtube_link = client_request_song.youtube_link
+        song.save()
+
+        response_dict = dict(
+            data=SongSerializer.serializer(song)
+        )
+        return JsonResponse(response_dict, status=201)

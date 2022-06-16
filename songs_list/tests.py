@@ -134,8 +134,7 @@ class SongTestCase(TestCase):
                                            content_type='application/json')
 
         json_replace_response = replace_response.json()
-        replace_response_data = json_replace_response["data"]
 
         self.assertEqual(replace_response.status_code, 400)
-        self.assertIn(replace_response_data, "error_message")
-        self.assertIn(replace_response_data["error_message"], "missing paramters")
+        self.assertIn("error_message", json_replace_response)
+        self.assertIn("missing parameters", json_replace_response["error_message"])
