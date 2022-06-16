@@ -109,3 +109,33 @@ class SongTestCase(TestCase):
         self.assertEqual(first_song["id"], second_song["id"])
         self.assertEqual(second_song["name"], "new_name")
         self.assertEqual(second_song["album"], "new_album")
+
+    def test_cannot_replace_object_when_missing_fields_name_album_year(self):
+        song_to_send = {
+            "name": "test_1",
+            "album": "album_1",
+            "release_year": 3000,
+            "youtube_link": ""
+        }
+
+        post_response = self.client.post("/songs_list/songs/",
+                                         data=song_to_send,
+                                         content_type='application/json')
+
+        json_response = post_response.json()
+        first_song = json_response["data"]
+        song_id = first_song["id"]
+
+        new_song_to_send = {
+            "youtube_link": ""
+        }
+        replace_response = self.client.put(f"/songs_list/songs/{song_id}/",
+                                           data=new_song_to_send,
+                                           content_type='application/json')
+
+        json_replace_response = replace_response.json()
+        replace_response_data = json_replace_response["data"]
+
+        self.assertEqual(replace_response.status_code, 400)
+        self.assertIn(replace_response_data, "error_message")
+        self.assertIn(replace_response_data["error_message"], "missing paramters")
